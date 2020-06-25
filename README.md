@@ -12,3 +12,22 @@ libraryDependencies ++= Seq(
   "io.chrisdavenport" %% "mules-http4s-redis" % "<version>"
 )
 ```
+
+
+To create a client, simply use the redis tools available from other components. This serves as the Codec which allows the other mules-redis, and mules-http4s to interact together.
+
+```scala
+
+import io.chrisdavenport.mules.redis.RedisCache
+import org.http4s._
+import io.chrisdavenport.mules.http4s._
+import dev.profunktor.redis4cats.Redis
+import dev.profunktor.redis4cats.connection.{ RedisClient, RedisURI }
+
+def makeCache(defaultTimeout: Option[TimeSpec], connectString: String) : Resource[IO, Cache[IO, (Method, Uri), CacheItem]] = for {
+    uri <- Resource.liftF(RedisURI.make[IO](connectString)) // Something like s"redis://$server:$port"
+    client <- RedisClient[IO](uri)
+    redis <- Redis[IO].fromClient(client,  RedisHttpCodec.CacheKeyWithItem)
+    cache = RedisCache.fromCommands(redis, defaultTimeout)
+  } yield cache
+```
