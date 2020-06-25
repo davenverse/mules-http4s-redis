@@ -1,7 +1,7 @@
 val specs2V = "4.10.0"
 
 val mulesRedisV = "0.3.0"
-val mulesHttp4sV = "0.2.0-M2"
+val mulesHttp4sV = "0.2.0-M3"
 
 val kindProjectorV = "0.11.0"
 val betterMonadicForV = "0.3.1"

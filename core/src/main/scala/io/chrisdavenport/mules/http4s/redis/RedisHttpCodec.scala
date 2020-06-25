@@ -27,14 +27,7 @@ object RedisHttpCodec {
   case class RedisScodecEncodingFailure(err: scodec.Err) extends Throwable(err.message)
 
   private def splitEpiCodec[A](codec: scodec.Codec[A]): SplitEpi[ByteVector, A] = SplitEpi[ByteVector, A](
-    {bv =>
-      // TODO: Remove NUL termination
-      val bitVector = bv.indexOfSlice(BitVector.lowByte.bytes) match {
-        case -1 => bv.toBitVector
-        case i => bv.dropRight(1).toBitVector
-      }
-      codec.decode(bitVector).fold(err => throw RedisScodecDecodingFailure(err), _.value)
-    },
+    bv => codec.decode(bv.toBitVector).fold(err => throw RedisScodecDecodingFailure(err), _.value),
     a => codec.encode(a).fold(err => throw RedisScodecEncodingFailure(err), _.toByteVector)
   )
 
@@ -58,7 +51,7 @@ object RedisHttpCodec {
 
   def withKeyPadding[A](ca: scodec.Codec[A]): RedisCodec[(A, Method, Uri), CacheItem] = Codecs.derive(
     byteVectorCodec,
-    splitEpiCodec((ca  ~ keyTupleCodec).xmapc{case (a, (b, c))=> (a, b, c)}{ case (a, b, c) => (a, (b, c))}),
+    splitEpiCodec((ca ~ keyTupleCodec).xmapc{case (a, (b, c))=> (a, b, c)}{ case (a, b, c) => (a, (b, c))}),
     splitEpiCodec(cacheItemCodec)
   )
   
