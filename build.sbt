@@ -1,7 +1,7 @@
 val specs2V = "4.10.0"
 
 val mulesRedisV = "0.3.0"
-val mulesHttp4sV = "0.2.0-M1"
+val mulesHttp4sV = "0.2.0-M2"
 
 val kindProjectorV = "0.11.0"
 val betterMonadicForV = "0.3.1"
@@ -79,6 +79,8 @@ lazy val commonSettings = Seq(
     "io.chrisdavenport"           %% "mules-redis"                % mulesRedisV,
 
     "org.specs2"                  %% "specs2-core"                % specs2V       % Test,
+    "com.codecommit"              %% "cats-effect-testing-specs2" % "0.3.0"       % Test,
+    "io.chrisdavenport"           %% "testcontainers-specs2"      % "0.2.0-M2"    % Test,
     "org.specs2"                  %% "specs2-scalacheck"          % specs2V       % Test
   )
 )
