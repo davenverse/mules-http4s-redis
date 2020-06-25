@@ -42,6 +42,8 @@ import scodec.bits.ByteVector
 class RedisCacheSpec extends Specification with CatsIO 
   with  ForAllTestContainer {
 
+    sequential
+
     lazy val container: GenericContainer = GenericContainer(
       "redis:5.0.0",
       exposedPorts = Seq(6379),
@@ -99,6 +101,7 @@ class RedisCacheSpec extends Specification with CatsIO
 
         secondResp <- newApp.run(request)
         second <- secondResp.as[String]
+        _ <- cache.delete((request.method, request.uri))
       } yield {
         (first must_=== "0") and 
           (second must_=== "1")
@@ -136,6 +139,7 @@ class RedisCacheSpec extends Specification with CatsIO
 
         secondResp <- newApp.run(request)
         second <- secondResp.as[String]//.as[Array[Byte]].map(ByteVector(_))
+        _ <- cache.delete((request.method, request.uri))
       } yield {
         (first must_=== "0") and 
           (second must_=== "0")
@@ -172,6 +176,7 @@ class RedisCacheSpec extends Specification with CatsIO
 
         secondResp <- newApp.run(request)
         second <- secondResp.as[String]
+        _ <- cache.delete((request.method, request.uri))
       } yield {
         (first must_=== "0") and 
           (second must_=== "1")
@@ -209,6 +214,7 @@ class RedisCacheSpec extends Specification with CatsIO
 
         secondResp <- newApp.run(request)
         second <- secondResp.as[String]
+        _ <- cache.delete((request.method, request.uri))
       } yield {
         (first must_=== "0") and
           (second must_=== "0")
@@ -247,6 +253,7 @@ class RedisCacheSpec extends Specification with CatsIO
 
         secondResp <- newApp.run(request)
         second <- secondResp.as[String]
+        _ <- cache.delete((request.method, request.uri))
       } yield {
         (first must_=== "0") and
           (second must_=== "1")
