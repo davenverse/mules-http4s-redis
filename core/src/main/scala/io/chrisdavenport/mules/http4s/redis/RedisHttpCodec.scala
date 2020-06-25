@@ -49,5 +49,17 @@ object RedisHttpCodec {
     splitEpiCodec(keyTupleCodec),
     splitEpiCodec(cacheItemCodec)
   )
+
+  def withConstKeyPadding[A](ca: scodec.Codec[A], a: A) : RedisCodec[(Method, Uri), CacheItem] = Codecs.derive(
+    byteVectorCodec,
+    splitEpiCodec(ca.unit(a) ~> keyTupleCodec),
+    splitEpiCodec(cacheItemCodec)
+  )
+
+  def withKeyPadding[A](ca: scodec.Codec[A]): RedisCodec[(A, Method, Uri), CacheItem] = Codecs.derive(
+    byteVectorCodec,
+    splitEpiCodec((ca  ~ keyTupleCodec).xmapc{case (a, (b, c))=> (a, b, c)}{ case (a, b, c) => (a, (b, c))}),
+    splitEpiCodec(cacheItemCodec)
+  )
   
 }
