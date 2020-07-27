@@ -1,4 +1,4 @@
-val specs2V = "4.10.0"
+val specs2V = "4.10.1"
 
 val mulesRedisV = "0.3.0"
 val mulesHttp4sV = "0.2.0-M3"
